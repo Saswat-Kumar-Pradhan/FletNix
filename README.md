@@ -11,11 +11,6 @@ It allows users to browse, search, and filter Netflix titles with age restrictio
 - [Tech Stack](#tech-stack)
 - [Features](#features)
 - [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-- [API Endpoints](#api-endpoints)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -59,17 +54,19 @@ movie browsing, recommendations, and IMDb reviews dynamically.
 
 ## 🗂️ Project Structure
 
+```
 fletnix-backend/
 │
 ├── app/
 │ ├── init.py
-│ ├── main.py # Core FastAPI app
-│ ├── database.py # MongoDB connection
-│ ├── models.py # Data models (optional)
-│ ├── auth.py # Authentication routes
-│ ├── utils.py # Password + JWT helpers
-│ └── imdb.py # IMDb data fetcher
+│ ├── main.py      # Core FastAPI app
+│ ├── database.py  # MongoDB connection
+│ ├── models.py    # Data models (optional)
+│ ├── auth.py      # Authentication routes
+│ ├── utils.py     # Password + JWT helpers
+│ └── imdb.py      # IMDb data fetcher
 │
-├── .env # Mongo URI + JWT secret
+├── .env           # Mongo URI + JWT secret
 ├── requirements.txt
 └── README.md
+```
