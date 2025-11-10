@@ -59,3 +59,17 @@ movie browsing, recommendations, and IMDb reviews dynamically.
 
 ## 🗂️ Project Structure
 
+fletnix-backend/
+│
+├── app/
+│ ├── init.py
+│ ├── main.py # Core FastAPI app
+│ ├── database.py # MongoDB connection
+│ ├── models.py # Data models (optional)
+│ ├── auth.py # Authentication routes
+│ ├── utils.py # Password + JWT helpers
+│ └── imdb.py # IMDb data fetcher
+│
+├── .env # Mongo URI + JWT secret
+├── requirements.txt
+└── README.md
