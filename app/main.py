@@ -9,27 +9,26 @@ from app.imdb import fetch_imdb_reviews
 
 app = FastAPI(title="FletNix API")
 
-# 🧩 Enable CORS (for local + Vercel frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can later restrict to frontend domain
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 🔐 Authentication routes
+# Authentication routes
 app.include_router(auth_router)
 
 
-# 🧾 List all shows (search + pagination + filters + age restriction)
 @app.get("/shows")
 def get_shows(
     page: int = 1,
     limit: int = 15,
     search: Optional[str] = Query(None, description="Search by title or cast"),
     type: Optional[str] = Query(None, description="Filter by type: Movie or TV Show"),
-    age: Optional[int] = Query(None, description="Filter content based on age")
+    age: Optional[int] = Query(None, description="Filter content based on age"),
+    date_added: Optional[str] = Query(None, description="Filter content based on adatege")
 ):
     skip = (page - 1) * limit
     query = {}
@@ -46,7 +45,8 @@ def get_shows(
     if age is not None and age < 18:
         query["rating"] = {"$ne": "R"}
 
-    cursor = shows_collection.find(query).skip(skip).limit(limit)
+    cursor = shows_collection.find(query).skip(skip).limit(limit).sort("date_added", -1)
+
     shows = []
     for s in cursor:
         s["_id"] = str(s["_id"])
@@ -56,7 +56,7 @@ def get_shows(
     return {"page": page, "total": total, "results": shows}
 
 
-# 📄 Show details with IMDb reviews + genre-based recommendations
+# Show details with IMDb reviews + genre-based recommendations
 @app.get("/shows/{show_id}")
 def get_show_detail(show_id: str):
     try:
@@ -69,11 +69,11 @@ def get_show_detail(show_id: str):
 
     show["_id"] = str(show["_id"])
 
-    # 🎬 Fetch IMDb reviews dynamically
+    # Fetch IMDb reviews dynamically
     imdb_data = fetch_imdb_reviews(show.get("title", ""))
     show["imdb"] = imdb_data
 
-    # 🎭 Genre-based recommendations
+    # Genre-based recommendations
     genre = show.get("listed_in", "").split(",")[0].strip() if show.get("listed_in") else None
     recs = []
     if genre:
@@ -89,13 +89,13 @@ def get_show_detail(show_id: str):
     return show
 
 
-# 🌐 Root route for health check
+# Root route for check
 @app.get("/")
 def root():
     return {"message": "Welcome to FletNix API"}
 
 
-# ⚙️ Only used for local development (Vercel ignores this)
+# Only used for local development
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
